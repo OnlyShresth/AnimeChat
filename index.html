@@ -2,27 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>AnimeChat - Talk to Your Favorite Anime Characters</title>
+  <title>AnimeChat - AI Character Conversations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-dark: #0D1B0D;
-      --bg-main: #1B3B12;
-      --bg-card: #2D5A2D;
-      --primary: #3C6E2E;
-      --accent: #5D4A2A;
-      --text-primary: #F5F1E8;
-      --text-secondary: #EDE4D3;
-      --text-muted: #A8B8A8;
-      --border: #4A6B4A;
-      --success: #52C41A;
-      --warning: #FA8C16;
-      --info: #1890FF;
-      --shadow: rgba(0, 0, 0, 0.3);
-    }
-
     * {
       margin: 0;
       padding: 0;
@@ -30,146 +13,164 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, var(--bg-dark), var(--bg-main));
-      color: var(--text-primary);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       height: 100vh;
       overflow: hidden;
     }
 
-    /* Main Layout */
-    .app-container {
+    /* Main Container */
+    .chat-app {
       height: 100vh;
-      max-width: 1000px;
+      max-width: 900px;
       margin: 0 auto;
+      background: #ffffff;
       display: flex;
       flex-direction: column;
-      background: rgba(13, 27, 13, 0.95);
-      backdrop-filter: blur(15px);
-      border: 1px solid var(--border);
-      box-shadow: 0 0 50px var(--shadow);
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
     }
 
     /* Header */
     .header {
-      background: var(--bg-card);
+      background: #ffffff;
       padding: 20px 30px;
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid var(--primary);
       flex-wrap: wrap;
-      gap: 16px;
+      gap: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
-    .logo {
-      font-size: 1.8rem;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
       font-weight: 700;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      color: #1f2937;
     }
 
-    .character-controls {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .input-field {
-      padding: 12px 18px;
-      border: 2px solid var(--border);
+    .brand-icon {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      width: 40px;
+      height: 40px;
       border-radius: 12px;
-      background: rgba(245, 241, 232, 0.1);
-      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .character-setup {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: #f9fafb;
+      padding: 8px;
+      border-radius: 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .char-input {
+      padding: 10px 16px;
+      border: none;
+      background: #ffffff;
+      border-radius: 12px;
       font-size: 14px;
       font-weight: 500;
-      width: 170px;
-      transition: all 0.3s ease;
+      color: #374151;
+      width: 160px;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
 
-    .input-field:focus {
+    .char-input:focus {
       outline: none;
-      border-color: var(--success);
-      background: rgba(245, 241, 232, 0.15);
-      box-shadow: 0 0 0 3px rgba(82, 196, 26, 0.2);
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
     }
 
-    .input-field::placeholder {
-      color: var(--text-muted);
+    .char-input::placeholder {
+      color: #9ca3af;
     }
 
-    .btn-primary {
-      padding: 12px 20px;
-      background: var(--success);
-      border: none;
-      border-radius: 12px;
+    .set-char-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
       color: white;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn-primary:hover {
-      background: #389e0d;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(82, 196, 26, 0.3);
-    }
-
-    .btn-secondary {
-      padding: 10px 16px;
-      background: transparent;
-      border: 2px solid var(--border);
+      border: none;
+      padding: 10px 20px;
       border-radius: 12px;
-      color: var(--text-secondary);
+      font-size: 14px;
       font-weight: 600;
-      font-size: 13px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .btn-secondary:hover {
-      border-color: var(--info);
-      color: var(--text-primary);
-      background: rgba(24, 144, 255, 0.1);
+    .set-char-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
     }
 
-    .status-badge {
-      padding: 8px 14px;
+    .auth-controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .auth-btn {
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .auth-btn:hover {
+      background: #5a5acf;
+      transform: translateY(-1px);
+    }
+
+    .status {
+      background: #f3f4f6;
+      color: #6b7280;
+      padding: 6px 12px;
       border-radius: 20px;
       font-size: 12px;
-      font-weight: 600;
+      font-weight: 500;
       display: flex;
       align-items: center;
       gap: 6px;
-      border: 1px solid;
     }
 
-    .status-loading {
-      background: rgba(24, 144, 255, 0.15);
-      border-color: rgba(24, 144, 255, 0.4);
-      color: #40a9ff;
+    .status.ai {
+      background: #dcfce7;
+      color: #16a34a;
     }
 
-    .status-ai {
-      background: rgba(82, 196, 26, 0.15);
-      border-color: rgba(82, 196, 26, 0.4);
-      color: #73d13d;
+    .status.local {
+      background: #fef3c7;
+      color: #d97706;
     }
 
-    .status-local {
-      background: rgba(250, 140, 22, 0.15);
-      border-color: rgba(250, 140, 22, 0.4);
-      color: #ffc53d;
+    /* Character Display */
+    .char-display {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      text-align: center;
+      padding: 16px 30px;
+      font-weight: 600;
+      font-size: 16px;
     }
 
     /* Chat Area */
@@ -177,26 +178,16 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-    }
-
-    .character-info {
-      background: rgba(60, 110, 46, 0.3);
-      padding: 16px 30px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 16px;
-      color: var(--text-primary);
-      border-bottom: 1px solid var(--border);
+      background: #fafafa;
     }
 
     .messages {
       flex: 1;
       overflow-y: auto;
-      padding: 25px 30px;
+      padding: 30px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 24px;
       scroll-behavior: smooth;
     }
 
@@ -205,24 +196,27 @@
     }
 
     .messages::-webkit-scrollbar-track {
-      background: rgba(74, 107, 74, 0.2);
+      background: #f1f5f9;
     }
 
     .messages::-webkit-scrollbar-thumb {
-      background: var(--primary);
+      background: #cbd5e1;
       border-radius: 3px;
     }
 
-    /* Message Styles */
-    .message {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      max-width: 75%;
-      animation: messageSlide 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    .messages::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
     }
 
-    @keyframes messageSlide {
+    /* Message Bubbles */
+    .message {
+      display: flex;
+      gap: 12px;
+      max-width: 70%;
+      animation: messageIn 0.3s ease-out;
+    }
+
+    @keyframes messageIn {
       from {
         opacity: 0;
         transform: translateY(20px);
@@ -242,89 +236,88 @@
       align-self: flex-start;
     }
 
-    .avatar {
-      width: 40px;
-      height: 40px;
+    .msg-avatar {
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 16px;
       flex-shrink: 0;
-      border: 2px solid;
+      margin-top: 4px;
     }
 
-    .user .avatar {
-      background: linear-gradient(135deg, var(--info), #096dd9);
-      border-color: var(--info);
+    .user .msg-avatar {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       color: white;
     }
 
-    .bot .avatar {
-      background: linear-gradient(135deg, var(--primary), var(--bg-card));
-      border-color: var(--primary);
-      color: var(--text-primary);
+    .bot .msg-avatar {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
     }
 
-    .bubble {
+    .msg-bubble {
       padding: 16px 20px;
-      border-radius: 18px;
-      word-wrap: break-word;
+      border-radius: 20px;
+      font-size: 15px;
       line-height: 1.5;
-      font-weight: 500;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      word-wrap: break-word;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
-    .user .bubble {
-      background: linear-gradient(135deg, var(--info), #096dd9);
+    .user .msg-bubble {
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       color: white;
-      border-bottom-right-radius: 4px;
+      border-bottom-right-radius: 8px;
     }
 
-    .bot .bubble {
-      background: rgba(60, 110, 46, 0.6);
-      color: var(--text-primary);
-      border: 1px solid rgba(74, 107, 74, 0.5);
-      border-bottom-left-radius: 4px;
+    .bot .msg-bubble {
+      background: white;
+      color: #1f2937;
+      border: 1px solid #e5e7eb;
+      border-bottom-left-radius: 8px;
     }
 
-    .character-name {
+    .char-name {
       font-size: 11px;
-      font-weight: 700;
-      opacity: 0.8;
-      margin-bottom: 6px;
+      font-weight: 600;
+      opacity: 0.7;
+      margin-bottom: 4px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     /* Typing Indicator */
-    .typing {
+    .typing-indicator {
       display: none;
       align-self: flex-start;
-      max-width: 75%;
+      gap: 12px;
     }
 
-    .typing-dots {
-      background: rgba(60, 110, 46, 0.6);
+    .typing-bubble {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 20px;
+      border-bottom-left-radius: 8px;
       padding: 16px 20px;
-      border-radius: 18px;
-      border-bottom-left-radius: 4px;
       display: flex;
       gap: 4px;
-      border: 1px solid rgba(74, 107, 74, 0.5);
     }
 
-    .dot {
+    .typing-dot {
       width: 8px;
       height: 8px;
-      background: var(--text-secondary);
+      background: #9ca3af;
       border-radius: 50%;
       animation: typing 1.4s ease-in-out infinite both;
     }
 
-    .dot:nth-child(1) { animation-delay: -0.32s; }
-    .dot:nth-child(2) { animation-delay: -0.16s; }
-    .dot:nth-child(3) { animation-delay: 0s; }
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0s; }
 
     @keyframes typing {
       0%, 80%, 100% {
@@ -339,65 +332,71 @@
 
     /* Input Area */
     .input-area {
-      background: var(--bg-dark);
       padding: 20px 30px;
-      border-top: 1px solid var(--border);
+      background: white;
+      border-top: 1px solid #e5e7eb;
       display: flex;
-      gap: 15px;
-      align-items: center;
+      gap: 16px;
+      align-items: flex-end;
     }
 
-    .message-input {
+    .input-wrapper {
       flex: 1;
-      padding: 16px 20px;
-      border: 2px solid var(--border);
-      border-radius: 25px;
-      background: rgba(60, 110, 46, 0.2);
-      color: var(--text-primary);
-      font-size: 16px;
-      font-weight: 500;
-      transition: all 0.3s ease;
+      position: relative;
     }
 
-    .message-input:focus {
-      outline: none;
-      border-color: var(--success);
-      background: rgba(60, 110, 46, 0.3);
-      box-shadow: 0 0 0 3px rgba(82, 196, 26, 0.2);
-    }
-
-    .message-input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .send-btn {
+    .msg-input {
+      width: 100%;
       padding: 16px 24px;
-      background: var(--success);
-      border: none;
+      border: 2px solid #e5e7eb;
       border-radius: 25px;
-      color: white;
-      font-weight: 700;
       font-size: 15px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      font-family: inherit;
+      background: #fafafa;
+      transition: all 0.2s ease;
+      resize: none;
+      min-height: 50px;
+      max-height: 120px;
+    }
+
+    .msg-input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .msg-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .send-button {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 8px;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 18px;
     }
 
-    .send-btn:hover:not(:disabled) {
-      background: #389e0d;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 25px rgba(82, 196, 26, 0.3);
+    .send-button:hover:not(:disabled) {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
     }
 
-    .send-btn:disabled {
+    .send-button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
       transform: none;
     }
 
-    /* Welcome Screen */
+    /* Welcome State */
     .welcome {
       flex: 1;
       display: flex;
@@ -405,75 +404,70 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 40px;
-      opacity: 0.9;
+      padding: 60px 40px;
+      color: #6b7280;
     }
 
     .welcome-icon {
-      font-size: 4rem;
-      margin-bottom: 25px;
-      animation: float 3s ease-in-out infinite;
+      font-size: 80px;
+      margin-bottom: 32px;
+      opacity: 0.8;
     }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .welcome h3 {
-      font-size: 1.5rem;
+    .welcome h2 {
+      font-size: 28px;
       font-weight: 700;
-      margin-bottom: 15px;
-      color: var(--text-primary);
+      color: #1f2937;
+      margin-bottom: 16px;
     }
 
     .welcome p {
-      font-size: 1rem;
-      opacity: 0.8;
-      max-width: 500px;
+      font-size: 16px;
       line-height: 1.6;
+      max-width: 500px;
+      opacity: 0.8;
     }
 
     /* Footer */
     .footer {
       position: fixed;
-      bottom: 15px;
-      right: 15px;
+      bottom: 20px;
+      right: 20px;
+      color: rgba(255, 255, 255, 0.7);
       font-size: 12px;
-      color: var(--text-muted);
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
+      font-weight: 500;
     }
 
-    .footer:hover {
-      opacity: 1;
-    }
-
-    /* Responsive */
+    /* Mobile Responsive */
     @media (max-width: 768px) {
-      .app-container {
+      .chat-app {
         height: 100vh;
       }
       
       .header {
         padding: 16px 20px;
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
       }
       
-      .character-controls {
+      .character-setup {
+        order: 1;
         width: 100%;
         justify-content: center;
       }
       
-      .input-field {
-        width: 140px;
+      .char-input {
+        width: 130px;
         font-size: 13px;
+      }
+      
+      .auth-controls {
+        order: 2;
       }
       
       .messages {
         padding: 20px;
-        gap: 16px;
+        gap: 20px;
       }
       
       .message {
@@ -482,6 +476,18 @@
       
       .input-area {
         padding: 16px 20px;
+      }
+      
+      .welcome {
+        padding: 40px 20px;
+      }
+      
+      .welcome-icon {
+        font-size: 60px;
+      }
+      
+      .welcome h2 {
+        font-size: 24px;
       }
     }
 
@@ -496,66 +502,66 @@
   </style>
 </head>
 <body>
-  <div class="app-container">
+  <div class="chat-app">
     <!-- Header -->
     <header class="header">
-      <div class="logo">
-        <span>💬</span>
+      <div class="brand">
+        <div class="brand-icon">💬</div>
         AnimeChat
       </div>
       
-      <div class="character-controls">
-        <input type="text" id="characterName" class="input-field" placeholder="Character (e.g., Naruto)">
-        <input type="text" id="showName" class="input-field" placeholder="Anime (e.g., Naruto)">
-        <button class="btn-primary" id="setCharacter">
-          <span>⚡</span>
-          Set Character
+      <div class="character-setup">
+        <input type="text" id="charName" class="char-input" placeholder="Character name">
+        <input type="text" id="animeName" class="char-input" placeholder="Anime series">
+        <button class="set-char-btn" id="setChar">
+          ⚡ Set Character
         </button>
       </div>
       
-      <div style="display: flex; gap: 15px; align-items: center;">
-        <button class="btn-secondary" id="loginBtn">
-          <span>🔐</span>
-          Login for AI
+      <div class="auth-controls">
+        <button class="auth-btn" id="authBtn">
+          🔐 Login for AI
         </button>
-        <div class="status-badge status-loading" id="status">
-          <span class="spinner">⟳</span>
-          Initializing...
+        <div class="status" id="statusBadge">
+          <span class="spinner">⟳</span> Initializing...
         </div>
       </div>
     </header>
     
+    <!-- Character Display -->
+    <div class="char-display" id="charDisplay">
+      Select your favorite anime character to start chatting! ✨
+    </div>
+    
     <!-- Chat Container -->
     <div class="chat-container">
-      <div class="character-info" id="characterInfo">
-        Select a character above to start chatting! ✨
-      </div>
-      
-      <div class="messages" id="messages">
-        <div class="welcome" id="welcome">
+      <div class="messages" id="messagesList">
+        <!-- Welcome State -->
+        <div class="welcome" id="welcomeState">
           <div class="welcome-icon">🎭</div>
-          <h3>Welcome to AnimeChat!</h3>
-          <p>Enter your favorite anime character and series above, then start an authentic conversation. Our AI brings characters to life with their unique personalities, catchphrases, and mannerisms!</p>
+          <h2>Welcome to AnimeChat!</h2>
+          <p>Choose any anime character and series above to start an authentic conversation. Our AI brings characters to life with their unique personalities and speech patterns!</p>
         </div>
       </div>
       
       <!-- Typing Indicator -->
-      <div class="typing message bot" id="typing">
-        <div class="avatar">🤖</div>
-        <div class="typing-dots">
-          <div class="dot"></div>
-          <div class="dot"></div>
-          <div class="dot"></div>
+      <div class="typing-indicator message bot" id="typingIndicator">
+        <div class="msg-avatar">🤖</div>
+        <div class="typing-bubble">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
         </div>
       </div>
     </div>
     
     <!-- Input Area -->
     <div class="input-area">
-      <input type="text" id="messageInput" class="message-input" placeholder="Choose a character first..." disabled>
-      <button class="send-btn" id="sendBtn" disabled>
-        <span>📤</span>
-        Send
+      <div class="input-wrapper">
+        <textarea id="messageInput" class="msg-input" placeholder="Choose a character first..." disabled rows="1"></textarea>
+      </div>
+      <button class="send-button" id="sendButton" disabled>
+        ➤
       </button>
     </div>
   </div>
@@ -567,27 +573,39 @@
   <script>
     // App State
     let currentCharacter = '';
-    let currentShow = '';
+    let currentAnime = '';
     let isAuthenticated = false;
     let useAI = false;
     let puterReady = false;
     let chatHistory = [];
     
     // DOM Elements
-    const characterNameInput = document.getElementById('characterName');
-    const showNameInput = document.getElementById('showName');
-    const setCharacterBtn = document.getElementById('setCharacter');
-    const loginBtn = document.getElementById('loginBtn');
-    const status = document.getElementById('status');
-    const characterInfo = document.getElementById('characterInfo');
-    const messages = document.getElementById('messages');
-    const welcome = document.getElementById('welcome');
-    const typing = document.getElementById('typing');
+    const charNameInput = document.getElementById('charName');
+    const animeNameInput = document.getElementById('animeName');
+    const setCharBtn = document.getElementById('setChar');
+    const authBtn = document.getElementById('authBtn');
+    const statusBadge = document.getElementById('statusBadge');
+    const charDisplay = document.getElementById('charDisplay');
+    const messagesList = document.getElementById('messagesList');
+    const welcomeState = document.getElementById('welcomeState');
+    const typingIndicator = document.getElementById('typingIndicator');
     const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
+    const sendButton = document.getElementById('sendButton');
+    
+    // Auto-resize textarea
+    messageInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
     
     // Update Status
     function updateStatus(state, message) {
+      const classes = {
+        ai: 'status ai',
+        local: 'status local',
+        loading: 'status'
+      };
+      
       const icons = { ai: '🤖', local: '💻', loading: '⟳' };
       const msgs = {
         ai: message || 'AI Connected',
@@ -595,9 +613,9 @@
         loading: message || 'Initializing...'
       };
       
-      status.className = `status-badge status-${state}`;
+      statusBadge.className = classes[state];
       const iconClass = state === 'loading' ? 'spinner' : '';
-      status.innerHTML = `<span class="${iconClass}">${icons[state]}</span> ${msgs[state]}`;
+      statusBadge.innerHTML = `<span class="${iconClass}">${icons[state]}</span> ${msgs[state]}`;
     }
     
     // Initialize PuterJS
@@ -611,9 +629,7 @@
         attempts++;
         
         try {
-          if (typeof window.puter !== 'undefined' && 
-              window.puter?.ai?.chat) {
-            
+          if (typeof window.puter !== 'undefined' && window.puter?.ai?.chat) {
             clearInterval(checkPuter);
             console.log('✅ PuterJS ready');
             
@@ -625,18 +641,17 @@
               window.puter.onAuth = function(user) {
                 console.log('✅ Authenticated:', user?.username);
                 isAuthenticated = true;
-                updateStatus('ai', `Logged in as ${user?.username || 'User'}`);
-                loginBtn.style.display = 'none';
+                updateStatus('ai', `Connected as ${user?.username || 'User'}`);
+                authBtn.style.display = 'none';
               };
             }
             
           } else if (attempts >= maxAttempts) {
             clearInterval(checkPuter);
-            console.warn('⚠️ PuterJS timeout');
             useAI = false;
             puterReady = false;
             updateStatus('local', 'Local Mode');
-            loginBtn.style.display = 'none';
+            authBtn.style.display = 'none';
           }
         } catch (error) {
           if (attempts >= maxAttempts) {
@@ -644,14 +659,14 @@
             useAI = false;
             puterReady = false;
             updateStatus('local', 'Local Mode');
-            loginBtn.style.display = 'none';
+            authBtn.style.display = 'none';
           }
         }
       }, 1000);
     }
     
     // Login Handler
-    loginBtn.addEventListener('click', async () => {
+    authBtn.addEventListener('click', async () => {
       if (!puterReady || !window.puter) {
         alert('PuterJS not ready. Please wait.');
         return;
@@ -671,8 +686,8 @@
         }
         
         isAuthenticated = true;
-        updateStatus('ai', `Logged in as ${user?.username || 'User'}`);
-        loginBtn.style.display = 'none';
+        updateStatus('ai', `Connected as ${user?.username || 'User'}`);
+        authBtn.style.display = 'none';
         
       } catch (error) {
         console.error('Login failed:', error);
@@ -682,32 +697,32 @@
     });
     
     // Set Character Handler
-    setCharacterBtn.addEventListener('click', () => {
-      const char = characterNameInput.value.trim();
-      const show = showNameInput.value.trim();
+    setCharBtn.addEventListener('click', () => {
+      const char = charNameInput.value.trim();
+      const anime = animeNameInput.value.trim();
       
-      if (!char || !show) {
-        alert('Please enter both character name and anime!');
+      if (!char || !anime) {
+        alert('Please enter both character name and anime series!');
         return;
       }
       
       currentCharacter = char;
-      currentShow = show;
+      currentAnime = anime;
       
-      characterInfo.textContent = `Now chatting with ${currentCharacter} from ${currentShow} ✨`;
+      charDisplay.textContent = `💬 Chatting with ${currentCharacter} from ${currentAnime}`;
       
-      messages.innerHTML = '';
-      welcome.style.display = 'none';
+      messagesList.innerHTML = '';
+      welcomeState.style.display = 'none';
       
       messageInput.disabled = false;
-      sendBtn.disabled = false;
-      messageInput.placeholder = `Talk to ${currentCharacter}...`;
+      sendButton.disabled = false;
+      messageInput.placeholder = `Message ${currentCharacter}...`;
       messageInput.focus();
       
-      addMessage('bot', `Hey there! I'm ${currentCharacter} from ${currentShow}. What's up? 😊`, currentCharacter);
+      addMessage('bot', `Hey there! I'm ${currentCharacter} from ${currentAnime}. Great to meet you! What would you like to talk about? 😊`, currentCharacter);
       
       chatHistory = [];
-      console.log(`✅ Character set: ${currentCharacter} from ${currentShow}`);
+      console.log(`✅ Character set: ${currentCharacter} from ${currentAnime}`);
     });
     
     // Add Message
@@ -716,15 +731,15 @@
       messageDiv.className = `message ${sender}`;
       
       const avatar = document.createElement('div');
-      avatar.className = 'avatar';
+      avatar.className = 'msg-avatar';
       avatar.innerHTML = sender === 'user' ? '👤' : '🎭';
       
       const bubble = document.createElement('div');
-      bubble.className = 'bubble';
+      bubble.className = 'msg-bubble';
       
       if (sender === 'bot' && characterName) {
         const nameDiv = document.createElement('div');
-        nameDiv.className = 'character-name';
+        nameDiv.className = 'char-name';
         nameDiv.textContent = characterName;
         bubble.appendChild(nameDiv);
       }
@@ -737,8 +752,8 @@
       messageDiv.appendChild(avatar);
       messageDiv.appendChild(bubble);
       
-      messages.appendChild(messageDiv);
-      messages.scrollTop = messages.scrollHeight;
+      messagesList.appendChild(messageDiv);
+      messagesList.scrollTop = messagesList.scrollHeight;
       
       chatHistory.push({ sender, content, timestamp: Date.now() });
       if (chatHistory.length > 10) {
@@ -746,24 +761,19 @@
       }
     }
     
-    // Typing Indicator
+    // Show Typing
     function showTyping(show = true) {
-      typing.style.display = show ? 'flex' : 'none';
+      typingIndicator.style.display = show ? 'flex' : 'none';
       if (show) {
-        messages.scrollTop = messages.scrollHeight;
+        messagesList.scrollTop = messagesList.scrollHeight;
       }
     }
     
     // Extract AI Response
     function extractResponse(response) {
       try {
-        if (typeof response === 'string') {
-          return response.trim();
-        }
-        
-        if (response?.message?.content) {
-          return response.message.content.trim();
-        }
+        if (typeof response === 'string') return response.trim();
+        if (response?.message?.content) return response.message.content.trim();
         
         const props = ['text', 'content', 'output', 'result'];
         for (const prop of props) {
@@ -772,7 +782,6 @@
             if (text) return text;
           }
         }
-        
         return '';
       } catch (error) {
         console.error('Error extracting response:', error);
@@ -784,21 +793,20 @@
     async function sendMessage() {
       const message = messageInput.value.trim();
       
-      if (!message || !currentCharacter || !currentShow) {
-        return;
-      }
+      if (!message || !currentCharacter || !currentAnime) return;
       
       addMessage('user', message);
       messageInput.value = '';
+      messageInput.style.height = 'auto';
       messageInput.disabled = true;
-      sendBtn.disabled = true;
+      sendButton.disabled = true;
       
       showTyping(true);
       
       let response = '';
       let usedAI = false;
       
-      // Enhanced AI Prompt (Based on Character.AI Research)
+      // Enhanced AI Prompt
       if (useAI && puterReady && isAuthenticated && window.puter?.ai?.chat) {
         try {
           console.log('🤖 Using AI...');
@@ -807,19 +815,19 @@
             .map(h => `${h.sender === 'user' ? 'User' : currentCharacter}: ${h.content}`)
             .join('\n');
           
-          const masterPrompt = `You are ${currentCharacter} from the anime series ${currentShow}.
+          const prompt = `You are ${currentCharacter} from ${currentAnime}.
 
-CRITICAL INSTRUCTIONS:
-- Embody ${currentCharacter}'s exact personality, speech patterns, catchphrases, and mannerisms from ${currentShow}
-- Stay completely in character at ALL times
-- Use their typical vocabulary, tone, and emotional responses
-- Include contextually relevant references to ${currentShow} when appropriate  
-- Use emojis/emoticons that match their personality style
+RULES:
+- Embody ${currentCharacter}'s exact personality, speech patterns, and mannerisms from ${currentAnime}
+- Stay completely in character at all times
+- Use their typical vocabulary, tone, and emotional responses  
+- Reference ${currentAnime} when contextually appropriate
+- Use emojis/emoticons that match their personality
 - Respond naturally in 2-4 sentences
-- Use *actions* for character gestures/expressions when fitting
-- Never break character or mention you're an AI
+- Use *actions* for gestures when fitting
+- Never break character or mention being an AI
 
-Previous conversation:
+Recent conversation:
 ${context}
 
 User: ${message}
@@ -827,10 +835,8 @@ User: ${message}
 ${currentCharacter}:`;
           
           const aiResponse = await Promise.race([
-            window.puter.ai.chat(masterPrompt),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Timeout')), 25000)
-            )
+            window.puter.ai.chat(prompt),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 25000))
           ]);
           
           const responseText = extractResponse(aiResponse);
@@ -840,7 +846,6 @@ ${currentCharacter}:`;
             usedAI = true;
             console.log('✅ AI success');
           } else {
-            console.warn('Empty AI response');
             usedAI = false;
           }
           
@@ -854,11 +859,11 @@ ${currentCharacter}:`;
       if (!usedAI) {
         console.log('📝 Local mode');
         const responses = [
-          `*${currentCharacter} thinks about what you said*\n\nThat's really interesting! "${message}" - I never thought about it that way before. What made you think of that? 🤔`,
-          `*${currentCharacter} nods enthusiastically*\n\nOh wow, "${message}"! That totally reminds me of something that happened in ${currentShow}! You've got a good point there! 😊`,
-          `*${currentCharacter} looks curious*\n\nHmm, "${message}"... That's pretty deep! You know, in ${currentShow} we dealt with stuff like this too. What's your take on it? 🧐`,
-          `*${currentCharacter} smiles*\n\nHaha, "${message}" - you really know how to get me thinking! That's exactly the kind of conversation I love having. Tell me more! ✨`,
-          `*${currentCharacter} gets excited*\n\nYes! "${message}" is spot on! You totally get it! In ${currentShow}, I learned that these kinds of insights are really important. What else do you think? 🌟`
+          `*${currentCharacter} looks thoughtful*\n\nThat's really interesting! "${message}" - you've got me thinking. What made you bring that up? 🤔`,
+          `*${currentCharacter} nods enthusiastically*\n\nOh wow! "${message}" totally reminds me of something from ${currentAnime}! You really get it! 😊`,
+          `*${currentCharacter} smiles*\n\nHmm, "${message}"... That's a great point! In ${currentAnime}, we deal with stuff like this too. What's your take? 💭`,
+          `*${currentCharacter} gets excited*\n\nExactly! "${message}" is so true! You know, that's the kind of insight that makes great conversations. Tell me more! ✨`,
+          `*${currentCharacter} leans forward with interest*\n\n"${message}" - I love how you think! That perspective reminds me of my experiences in ${currentAnime}. 🌟`
         ];
         response = responses[Math.floor(Math.random() * responses.length)];
       }
@@ -868,13 +873,13 @@ ${currentCharacter}:`;
       setTimeout(() => {
         addMessage('bot', response, currentCharacter);
         messageInput.disabled = false;
-        sendBtn.disabled = false;
+        sendButton.disabled = false;
         messageInput.focus();
       }, 800);
     }
     
     // Event Listeners
-    sendBtn.addEventListener('click', sendMessage);
+    sendButton.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
@@ -887,7 +892,7 @@ ${currentCharacter}:`;
     
     setTimeout(() => {
       if (!puterReady) {
-        loginBtn.style.display = 'none';
+        authBtn.style.display = 'none';
         updateStatus('local', 'Local Mode');
       }
     }, 15000);
