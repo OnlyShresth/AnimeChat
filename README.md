@@ -2,7 +2,7 @@
 
 **AI-powered conversations with your favorite anime characters**
 
-[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Try_Now-success?style=for-the-badge)](https://animechat.vercel.app)
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-Try_Now-success?style=for-the-badge)](https://anime-chat-olive.vercel.app)
 [![Mobile Ready](https://img.shields.io/badge/📱_Mobile-Optimized-blue?style=for-the-badge)](#)
 
 ---
@@ -62,6 +62,6 @@ Transform any conversation into authentic anime character dialogue. Chat with ch
 
 ---
 
-**[🚀 Try AnimeChat Now →](https://animechat.vercel.app)**
+**[🚀 Try AnimeChat Now →](https://anime-chat-olive.vercel.app)**
 
 *Made by Shresth*
