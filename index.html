@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AnimeChat - Talk to Your Favorite Anime Characters</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e1a2e, #2d1b69, #8e44ad);
+      color: white;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    /* Particle Animation Background */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    .particle {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { 
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10px) scale(1);
+      }
+    }
+    
+    /* Main Container */
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      max-width: 1200px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+      background: rgba(30, 26, 46, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Header */
+    header {
+      background: rgba(45, 27, 105, 0.9);
+      padding: 20px 30px;
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid rgba(142, 68, 173, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .logo {
+      font-size: 2em;
+      font-weight: 700;
+      color: #e74c3c;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .character-selector {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .character-input {
+      padding: 12px 18px;
+      border: 2px solid rgba(142, 68, 173, 0.6);
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 14px;
+      width: 200px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .character-input:focus {
+      outline: none;
+      border-color: #e74c3c;
+      box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+    }
+    
+    .character-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .switch-btn {
+      padding: 12px 20px;
+      background: linear-gradient(45deg, #e74c3c, #f39c12);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .switch-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+    }
+    
+    .login-btn {
+      padding: 12px 20px;
+      background: linear-gradient(45deg, #27ae60, #2ecc71);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
+    }
+    
+    /* Status Indicator */
+    .status {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .status-loading {
+      background: rgba(52, 152, 219, 0.2);
+      border: 1px solid rgba(52, 152, 219, 0.5);
+      color: #3498db;
+    }
+    
+    .status-ai {
+      background: rgba(39, 174, 96, 0.2);
+      border: 1px solid rgba(39, 174, 96, 0.5);
+      color: #27ae60;
+    }
+    
+    .status-local {
+      background: rgba(243, 156, 18, 0.2);
+      border: 1px solid rgba(243, 156, 18, 0.5);
+      color: #f39c12;
+    }
+    
+    /* Chat Container */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .current-character {
+      background: rgba(142, 68, 173, 0.3);
+      padding: 15px 30px;
+      text-align: center;
+      font-weight: 600;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scroll-behavior: smooth;
+    }
+    
+    .messages::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .messages::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    
+    .messages::-webkit-scrollbar-thumb {
+      background: rgba(142, 68, 173, 0.6);
+      border-radius: 10px;
+    }
+    
+    /* Message Bubbles */
+    .message {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+      max-width: 70%;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .message.user {
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+    
+    .message.bot {
+      align-self: flex-start;
+    }
+    
+    .message-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    
+    .message.user .message-avatar {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+    }
+    
+    .message.bot .message-avatar {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+    }
+    
+    .message-content {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 18px;
+      padding: 15px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      word-wrap: break-word;
+    }
+    
+    .message.user .message-content {
+      background: linear-gradient(45deg, #3498db, #2980b9);
+      color: white;
+    }
+    
+    .message.bot .message-content {
+      background: linear-gradient(45deg, #8e44ad, #9b59b6);
+      color: white;
+    }
+    
+    .message-content .character-name {
+      font-weight: 600;
+      font-size: 12px;
+      opacity: 0.8;
+      margin-bottom: 5px;
+    }
+    
+    .typing-indicator {
+      display: none;
+      align-items: center;
+      gap: 15px;
+      max-width: 70%;
+      align-self: flex-start;
+    }
+    
+    .typing-dots {
+      background: rgba(142, 68, 173, 0.3);
+      border-radius: 18px;
+      padding: 15px 20px;
+      display: flex;
+      gap: 5px;
+    }
+    
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      animation: typing 1.4s ease-in-out infinite both;
+    }
+    
+    .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+    .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+    .typing-dot:nth-child(3) { animation-delay: 0s; }
+    
+    @keyframes typing {
+      0%, 80%, 100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    /* Input Area */
+    .input-area {
+      background: rgba(45, 27, 105, 0.9);
+      padding: 20px 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+    
+    .message-input {
+      flex: 1;
+      padding: 15px 20px;
+      border: 2px solid rgba(142, 68, 173, 0.6);
+      border-radius: 25px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      font-size: 16px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .message-input:focus {
+      outline: none;
+      border-color: #e74c3c;
+      box-shadow: 0 0 20px rgba(231, 76, 60, 0.3);
+    }
+    
+    .message-input::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .send-btn {
+      padding: 15px 25px;
+      background: linear-gradient(45deg, #e74c3c, #f39c12);
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .send-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+    }
+    
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Empty State */
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px;
+      opacity: 0.7;
+    }
+    
+    .empty-state-icon {
+      font-size: 4em;
+      margin-bottom: 20px;
+    }
+    
+    .empty-state h3 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      color: #e74c3c;
+    }
+    
+    .empty-state p {
+      font-size: 1.1em;
+      opacity: 0.8;
+      max-width: 500px;
+    }
+    
+    /* Footer Credit */
+    .footer-credit {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      z-index: 1000;
+      font-family: 'Poppins', sans-serif;
+    }
+    
+    .footer-credit:hover {
+      color: #e74c3c;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .logo {
+        font-size: 1.5em;
+      }
+      
+      .character-selector {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .character-input {
+        width: 150px;
+        font-size: 13px;
+      }
+      
+      .container {
+        border: none;
+        border-radius: 0;
+      }
+      
+      .messages {
+        padding: 15px;
+      }
+      
+      .message {
+        max-width: 85%;
+      }
+      
+      .input-area {
+        padding: 15px 20px;
+      }
+      
+      .footer-credit {
+        font-size: 10px;
+        bottom: 5px;
+        right: 5px;
+      }
+    }
+    
+    /* Loading States */
+    .spinner {
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Particle Background -->
+  <div class="particles" id="particles"></div>
+  
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <span>💬</span>
+        AnimeChat
+      </div>
+      
+      <div class="character-selector">
+        <input type="text" id="characterName" class="character-input" placeholder="Character name (e.g., Naruto)">
+        <input type="text" id="showName" class="character-input" placeholder="Anime show (e.g., Naruto)">
+        <button class="switch-btn" id="switchBtn">
+          <span>🔄</span>
+          Switch Character
+        </button>
+      </div>
+      
+      <div style="display: flex; gap: 15px; align-items: center;">
+        <button class="login-btn" id="loginBtn">
+          <span>🔐</span>
+          Login for AI
+        </button>
+        <div class="status status-loading" id="statusIndicator">
+          <span class="spinner">⟳</span>
+          Initializing...
+        </div>
+      </div>
+    </header>
+    
+    <!-- Chat Container -->
+    <div class="chat-container">
+      <!-- Current Character Display -->
+      <div class="current-character" id="currentCharacter">
+        Select a character to start chatting! ✨
+      </div>
+      
+      <!-- Messages Area -->
+      <div class="messages" id="messages">
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-state-icon">🎭</div>
+          <h3>Welcome to AnimeChat!</h3>
+          <p>Enter your favorite anime character and show name above, then start a conversation. Our AI will bring them to life with authentic personality and dialogue!</p>
+        </div>
+      </div>
+      
+      <!-- Typing Indicator -->
+      <div class="typing-indicator" id="typingIndicator">
+        <div class="message-avatar" style="background: linear-gradient(45deg, #e74c3c, #c0392b);">
+          <span>🤖</span>
+        </div>
+        <div class="typing-dots">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Input Area -->
+    <div class="input-area">
+      <input type="text" id="messageInput" class="message-input" placeholder="Type your message..." disabled>
+      <button class="send-btn" id="sendBtn" disabled>
+        <span>✉️</span>
+        Send
+      </button>
+    </div>
+  </div>
+  
+  <!-- Footer Credit -->
+  <div class="footer-credit">Made by Shresth</div>
+
+  <!-- PuterJS -->
+  <script src="https://js.puter.com/v2/" async onload="initializePuter()"></script>
+  
+  <script>
+    // Global variables
+    let currentCharacter = '';
+    let currentShow = '';
+    let isAuthenticated = false;
+    let useAI = false;
+    let puterReady = false;
+    let conversationHistory = [];
+    
+    // DOM elements
+    const characterNameInput = document.getElementById('characterName');
+    const showNameInput = document.getElementById('showName');
+    const switchBtn = document.getElementById('switchBtn');
+    const loginBtn = document.getElementById('loginBtn');
+    const statusIndicator = document.getElementById('statusIndicator');
+    const currentCharacterDisplay = document.getElementById('currentCharacter');
+    const messagesContainer = document.getElementById('messages');
+    const emptyState = document.getElementById('emptyState');
+    const typingIndicator = document.getElementById('typingIndicator');
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    
+    // Initialize particles
+    function createParticles() {
+      const particlesContainer = document.getElementById('particles');
+      const particleCount = 50;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+    
+    // Update status indicator
+    function updateStatus(status, message) {
+      const icons = {
+        ai: '🤖',
+        local: '⚙️',
+        loading: '⟳'
+      };
+      
+      const messages = {
+        ai: message || 'AI Ready & Authenticated',
+        local: message || 'Local Mode Active',
+        loading: message || 'Initializing...'
+      };
+      
+      statusIndicator.className = `status status-${status}`;
+      const iconClass = status === 'loading' ? 'spinner' : '';
+      statusIndicator.innerHTML = `<span class="${iconClass}">${icons[status]}</span> ${messages[status]}`;
+    }
+    
+    // Initialize PuterJS
+    function initializePuter() {
+      console.log('🤖 PuterJS loaded');
+      
+      let checkCount = 0;
+      const maxChecks = 10;
+      
+      const puterCheck = setInterval(() => {
+        checkCount++;
+        
+        try {
+          if (typeof window.puter !== 'undefined' && 
+              window.puter && 
+              window.puter.ai && 
+              typeof window.puter.ai.chat === 'function') {
+            
+            clearInterval(puterCheck);
+            console.log('✅ PuterJS AI ready!');
+            
+            puterReady = true;
+            useAI = true;
+            updateStatus('loading', 'AI Ready - Login Required');
+            
+            try {
+              if (window.puter.onAuth) {
+                window.puter.onAuth = function(user) {
+                  console.log('✅ Authenticated:', user?.username || 'User');
+                  isAuthenticated = true;
+                  updateStatus('ai', `Logged in as ${user?.username || 'User'}`);
+                  loginBtn.style.display = 'none';
+                };
+              }
+            } catch (authError) {
+              console.warn('Auth handler setup failed:', authError);
+            }
+            
+          } else if (checkCount >= maxChecks) {
+            clearInterval(puterCheck);
+            console.warn('⚠️ PuterJS timeout, switching to local mode');
+            useAI = false;
+            puterReady = false;
+            updateStatus('local', 'Local Mode Active');
+            loginBtn.style.display = 'none';
+          }
+        } catch (error) {
+          console.warn('PuterJS check error:', error);
+          if (checkCount >= maxChecks) {
+            clearInterval(puterCheck);
+            useAI = false;
+            puterReady = false;
+            updateStatus('local', 'Local Mode Active');
+            loginBtn.style.display = 'none';
+          }
+        }
+      }, 1000);
+    }
+    
+    // Login handler
+    if (loginBtn) {
+      loginBtn.addEventListener('click', async () => {
+        if (!puterReady || !window.puter) {
+          alert('PuterJS not ready yet. Please wait a moment.');
+          return;
+        }
+        
+        try {
+          updateStatus('loading', 'Authenticating...');
+          console.log('🔐 Starting authentication...');
+          
+          await window.puter.auth.signIn();
+          
+          let user = null;
+          try {
+            if (window.puter.auth.getUser) {
+              user = await window.puter.auth.getUser();
+            }
+          } catch (getUserError) {
+            console.warn('Could not get user info:', getUserError);
+          }
+          
+          console.log('✅ Login successful');
+          isAuthenticated = true;
+          updateStatus('ai', `Logged in as ${user?.username || 'User'}`);
+          loginBtn.style.display = 'none';
+          
+        } catch (error) {
+          console.error('❌ Login failed:', error);
+          updateStatus('loading', 'Login Failed - Try Again');
+          alert('Login failed: ' + (error.message || 'Unknown error'));
+        }
+      });
+    }
+    
+    // Switch character handler
+    switchBtn.addEventListener('click', () => {
+      const charName = characterNameInput.value.trim();
+      const showName = showNameInput.value.trim();
+      
+      if (!charName || !showName) {
+        alert('Please enter both character name and anime show!');
+        return;
+      }
+      
+      currentCharacter = charName;
+      currentShow = showName;
+      
+      // Update UI
+      currentCharacterDisplay.textContent = `Chatting with ${currentCharacter} from ${currentShow} ✨`;
+      
+      // Clear messages and show character intro
+      messagesContainer.innerHTML = '';
+      emptyState.style.display = 'none';
+      
+      // Enable input
+      messageInput.disabled = false;
+      sendBtn.disabled = false;
+      messageInput.placeholder = `Talk to ${currentCharacter}...`;
+      messageInput.focus();
+      
+      // Add welcome message from character
+      addMessage('bot', `Hello! I'm ${currentCharacter} from ${currentShow}! What would you like to talk about? ✨`);
+      
+      // Clear conversation history for new character
+      conversationHistory = [];
+      
+      console.log(`✅ Switched to ${currentCharacter} from ${currentShow}`);
+    });
+    
+    // Add message to chat
+    function addMessage(sender, content, characterName = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${sender}`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'message-avatar';
+      avatar.innerHTML = sender === 'user' ? '👤' : '🤖';
+      
+      const messageContent = document.createElement('div');
+      messageContent.className = 'message-content';
+      
+      if (sender === 'bot' && characterName) {
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'character-name';
+        nameDiv.textContent = characterName;
+        messageContent.appendChild(nameDiv);
+      }
+      
+      const textDiv = document.createElement('div');
+      textDiv.textContent = content;
+      messageContent.appendChild(textDiv);
+      
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(messageContent);
+      
+      messagesContainer.appendChild(messageDiv);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      
+      // Store in conversation history
+      conversationHistory.push({ sender, content, timestamp: Date.now() });
+    }
+    
+    // Show/hide typing indicator
+    function showTyping(show = true) {
+      typingIndicator.style.display = show ? 'flex' : 'none';
+      if (show) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    }
+    
+    // Extract response text from AI
+    function extractResponseText(response) {
+      try {
+        if (typeof response === 'string') {
+          return response.trim();
+        }
+        
+        if (response && typeof response === 'object') {
+          if (response.message && typeof response.message.content === 'string') {
+            return response.message.content.trim();
+          }
+          
+          const fallbackProps = ['text', 'content', 'output', 'result'];
+          for (const prop of fallbackProps) {
+            if (response[prop] && typeof response[prop] === 'string') {
+              const text = response[prop].trim();
+              if (text) return text;
+            }
+          }
+        }
+        
+        return '';
+      } catch (error) {
+        console.error('Error extracting response:', error);
+        return '';
+      }
+    }
+    
+    // Send message
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      
+      if (!message || !currentCharacter || !currentShow) {
+        return;
+      }
+      
+      // Add user message
+      addMessage('user', message);
+      messageInput.value = '';
+      messageInput.disabled = true;
+      sendBtn.disabled = true;
+      
+      // Show typing
+      showTyping(true);
+      
+      let response = '';
+      let usedAI = false;
+      
+      // Try AI if available
+      if (useAI && puterReady && isAuthenticated && window.puter?.ai?.chat) {
+        try {
+          console.log('🤖 Using AI for character response...');
+          
+          // Create context-aware prompt
+          const context = conversationHistory.length > 0 ? 
+            conversationHistory.slice(-6).map(h => `${h.sender}: ${h.content}`).join('\n') : '';
+          
+          const prompt = `You are ${currentCharacter} from the anime ${currentShow}. Respond to this message in character with authentic personality, speech patterns, catchphrases, and emoticons. Stay completely in character and maintain consistency with the anime.
+
+Context of recent conversation:
+${context}
+
+User message: "${message}"
+
+Respond as ${currentCharacter} would, using their personality, emotions, and typical expressions:`;
+          
+          console.log('Sending prompt to AI...');
+          
+          const aiResponse = await Promise.race([
+            window.puter.ai.chat(prompt),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Timeout')), 30000)
+            )
+          ]);
+          
+          const responseText = extractResponseText(aiResponse);
+          
+          if (responseText && responseText.length > 0) {
+            response = responseText;
+            usedAI = true;
+            console.log('✅ AI response successful');
+          } else {
+            console.warn('Empty AI response, using fallback');
+            usedAI = false;
+          }
+          
+        } catch (aiError) {
+          console.warn('AI failed:', aiError.message);
+          usedAI = false;
+        }
+      }
+      
+      // Local fallback
+      if (!usedAI) {
+        console.log('📝 Using local fallback');
+        const responses = [
+          `I see... ${message}. That's interesting! 😊`,
+          `Oh! ${message}? That reminds me of something... ✨`,
+          `Hmm, ${message}... I understand what you mean! 🤔`,
+          `Really? ${message}! Tell me more about that! 😮`,
+          `${message}... that's exactly what I was thinking too! 💭`
+        ];
+        response = responses[Math.floor(Math.random() * responses.length)];
+      }
+      
+      // Hide typing and show response
+      showTyping(false);
+      
+      // Simulate typing delay for better UX
+      setTimeout(() => {
+        addMessage('bot', response, currentCharacter);
+        messageInput.disabled = false;
+        sendBtn.disabled = false;
+        messageInput.focus();
+      }, 500);
+    }
+    
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+    
+    // Initialize app
+    createParticles();
+    updateStatus('loading', 'Loading...');
+    
+    // Auto-fallback timer
+    setTimeout(() => {
+      if (!puterReady) {
+        if (loginBtn) loginBtn.style.display = 'none';
+        updateStatus('local', 'Local Mode Active');
+      }
+    }, 15000);
+  </script>
+</body>
+</html>
